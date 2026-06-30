@@ -48,7 +48,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     await Project.findByIdAndDelete(req.params.id)
-    res.json({ message: 'Projet supprimé ✅' })
+    res.json({ message: 'Projet supprimé ' })
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur' })
   }
