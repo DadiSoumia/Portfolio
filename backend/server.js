@@ -11,9 +11,8 @@ dotenv.config()
 
 const app = express()
 
-
 app.use(cors({
-  origin: '*',
+  origin: 'https://portfolio-hh2c.vercel.app',
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }))
@@ -26,8 +25,7 @@ app.use('/api/contact', contactRoutes)
 app.use('/api/upload', uploadRoutes)
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log(' MongoDB connecté'))
+  .then(() => console.log('✅ MongoDB connecté'))
   .catch((err) => console.log(' Erreur MongoDB:', err))
 
-const PORT = process.env.PORT || 5000
-app.listen(PORT, () => console.log(` Serveur lancé sur le port ${PORT}`))
+export default app   
