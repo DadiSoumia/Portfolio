@@ -1,5 +1,5 @@
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import Footer from '../components/footer'
 
 export default function Contact() {
   const phone = import.meta.env.VITE_WHATSAPP // ton numéro avec indicatif Algérie sans +

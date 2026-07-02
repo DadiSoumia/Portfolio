@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
-import Footer from '../components/Footer'
+import Footer from '../components/footer'
 import ProjectCard from '../components/ProjectCard'
 
 function useInView(threshold = 0.15) {
