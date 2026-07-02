@@ -19,7 +19,8 @@ export default function Contact() {
         <p style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: '1.75', marginBottom: '40px' }}>
           Choisissez comment vous souhaitez me contacter.
         </p>
-
+        
+/* Bouton Email */
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           {/* Bouton Email */}
           <a
