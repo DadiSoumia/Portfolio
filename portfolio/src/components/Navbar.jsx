@@ -129,7 +129,7 @@ export default function Navbar() {
             Projects
           </span>
 
-          <a href="https://wa.me/213559174223" target="_blank" rel="noopener noreferrer"
+          <a href={`https://wa.me/${import.meta.env.VITE_WHATSAPP}`} target="_blank" rel="noopener noreferrer"
             className="nav-link" style={navLinkStyle}>
             Contact me
           </a>

@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 export default function Contact() {
-  const phone = '213559174223' // ton numéro avec indicatif Algérie sans +
+  const phone = import.meta.env.VITE_WHATSAPP // ton numéro avec indicatif Algérie sans +
   const whatsappMsg = encodeURIComponent("Bonjour Soumia, je vous contacte depuis votre portfolio.")
 
   return (

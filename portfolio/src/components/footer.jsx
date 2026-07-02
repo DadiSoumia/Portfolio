@@ -5,7 +5,7 @@ export default function Footer() {
     { href: 'https://github.com/DadiSoumia', icon: <FaGithub />, color: '#f8f8f7', label: 'GitHub' },
     { href: 'https://www.linkedin.com/in/dadi-soumia', icon: <FaLinkedin />, color: '#0A66C2', label: 'LinkedIn' },
     { href: 'mailto:soumiadadi17@gmail.com', icon: <FaEnvelope />, color: '#EA4335', label: 'Email' },
-    { href: 'https://wa.me/213559174223', icon: <FaWhatsapp />, color: '#25D366', label: 'WhatsApp' },
+   { href: `https://wa.me/${import.meta.env.VITE_WHATSAPP}`, icon: <FaWhatsapp />, color: '#25D366', label: 'WhatsApp' },
   ]
 
   return (
@@ -67,7 +67,7 @@ export default function Footer() {
           >
             soumiadadi17@gmail.com ↗
           </a>
-          <a href="https://wa.me/213559174223" target="_blank" rel="noopener noreferrer"
+          <a href={`https://wa.me/${import.meta.env.VITE_WHATSAPP}`} target="_blank" rel="noopener noreferrer"
             style={{
               fontSize: '13px', fontWeight: '500', padding: '12px 24px',
               border: '1px solid rgba(37,211,102,0.3)',
