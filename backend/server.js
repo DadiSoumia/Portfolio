@@ -11,7 +11,7 @@ dotenv.config()
 
 const app = express()
 
-// ✅ CORS corrigé
+
 app.use(cors({
   origin: '*',
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -26,8 +26,8 @@ app.use('/api/contact', contactRoutes)
 app.use('/api/upload', uploadRoutes)
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connecté'))
-  .catch((err) => console.log('❌ Erreur MongoDB:', err))
+  .then(() => console.log(' MongoDB connecté'))
+  .catch((err) => console.log(' Erreur MongoDB:', err))
 
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => console.log(`✅ Serveur lancé sur le port ${PORT}`))
+app.listen(PORT, () => console.log(` Serveur lancé sur le port ${PORT}`))
