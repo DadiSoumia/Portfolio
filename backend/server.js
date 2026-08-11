@@ -12,7 +12,7 @@ dotenv.config()
 const app = express()
 
 app.use(cors({
-  origin: 'https://portfolio-hh2c.vercel.app',
+  origin: 'https://soumiadadi.vercel.app',
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }))
