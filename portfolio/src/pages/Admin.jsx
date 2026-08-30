@@ -84,8 +84,8 @@ useEffect(() => {
         body: JSON.stringify({ ...form, photos: photoUrls })
       })
       if (!res.ok) {
-        const text = await res.text()
-        throw new Error(`Échec de l'enregistrement du projet (${res.status}): ${text}`)
+        const data = await res.json().catch(() => ({}))
+        throw new Error(`Échec de l'enregistrement du projet (${res.status}): ${data.detail || data.message || 'inconnu'}`)
       }
 
       setForm({ name: '', description: '', year: '', link: '', photos: [] })

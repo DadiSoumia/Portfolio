@@ -30,7 +30,8 @@ router.post('/', authMiddleware, async (req, res) => {
     await project.save()
     res.status(201).json(project)
   } catch (err) {
-    res.status(500).json({ message: 'Erreur serveur' })
+    console.error('Erreur POST /api/projects:', err)
+    res.status(500).json({ message: 'Erreur serveur', detail: err.message })
   }
 })
 
@@ -40,7 +41,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const project = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true })
     res.json(project)
   } catch (err) {
-    res.status(500).json({ message: 'Erreur serveur' })
+    console.error('Erreur PUT /api/projects/:id:', err)
+    res.status(500).json({ message: 'Erreur serveur', detail: err.message })
   }
 })
 
