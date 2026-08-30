@@ -12,7 +12,7 @@ dotenv.config()
 const app = express()
 
 app.use(cors({
-  origin: 'https://soumiadadi.vercel.app',
+  origin: ['https://soumiadadi.vercel.app', 'http://localhost:5173'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }))
@@ -28,4 +28,12 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connecté'))
   .catch((err) => console.log(' Erreur MongoDB:', err))
 
-export default app   
+// app.listen() n'est utile qu'en local : sur Vercel, l'app est utilisée
+// directement comme fonction serverless (voir api/index.js), donc on ne
+// démarre un vrai serveur que si on n'est PAS sur Vercel.
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000
+  app.listen(PORT, () => console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`))
+}
+
+export default app

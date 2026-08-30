@@ -30,6 +30,7 @@ export default function ProjectCard({ project }) {
      {/* Photos en dessous */}
 {project.photos && project.photos.length > 0 && (
   <div style={{ 
+    position: 'relative',
     display: 'grid', 
     gridTemplateColumns: project.photos.length === 1 ? '1fr' : '1fr 1fr', 
     gap: '2px', 
@@ -41,12 +42,38 @@ export default function ProjectCard({ project }) {
     {project.photos.slice(0, 2).map((photo, i) => (
       <img key={i} src={photo} alt={project.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
     ))}
+
+    {project.link && project.link !== '#' && (
+      <a
+        href={project.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: 'absolute',
+          bottom: '10px',
+          right: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '7px 14px',
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          backdropFilter: 'blur(4px)',
+          color: '#fff',
+          fontSize: '12px',
+          fontWeight: '600',
+          borderRadius: '20px',
+          textDecoration: 'none',
+        }}
+      >
+        🔗 Voir le projet
+      </a>
+    )}
   </div>
 )}
 
-      {/* Tech + flèche */}
-      <div style={{ padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{project.tech}</span>
+      {/* Flèche */}
+      <div style={{ padding: '10px 16px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>↗</span>
       </div>
     </Link>

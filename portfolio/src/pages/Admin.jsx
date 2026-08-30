@@ -5,7 +5,7 @@ export default function Admin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [projects, setProjects] = useState([])
-  const [form, setForm] = useState({ name: '', description: '', tech: '', year: '', photos: [] })
+  const [form, setForm] = useState({ name: '', description: '', year: '', link: '', photos: [] })
   const [editId, setEditId] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState([])
@@ -50,40 +50,54 @@ useEffect(() => {
 
   const handleSubmit = async () => {
     setUploading(true)
-    let photoUrls = form.photos
+    try {
+      let photoUrls = form.photos
 
-    if (selectedFiles.length > 0) {
-      const formData = new FormData()
-      selectedFiles.forEach(file => formData.append('photos', file))
+      if (selectedFiles.length > 0) {
+        const formData = new FormData()
+        selectedFiles.forEach(file => formData.append('photos', file))
 
-      const res = await fetch(import.meta.env.VITE_API_URL + '/api/upload', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
+        const res = await fetch(import.meta.env.VITE_API_URL + '/api/upload', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        })
+        if (!res.ok) {
+          const text = await res.text()
+          throw new Error(`Échec de l'upload des photos (${res.status}): ${text}`)
+        }
+        const data = await res.json()
+        photoUrls = [...photoUrls, ...data.urls]
+      }
+
+      const method = editId ? 'PUT' : 'POST'
+      const url = editId
+        ? `${import.meta.env.VITE_API_URL}/api/projects/${editId}`
+        : `${import.meta.env.VITE_API_URL}/api/projects`
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ ...form, photos: photoUrls })
       })
-      const data = await res.json()
-      photoUrls = [...photoUrls, ...data.urls]
+      if (!res.ok) {
+        const text = await res.text()
+        throw new Error(`Échec de l'enregistrement du projet (${res.status}): ${text}`)
+      }
+
+      setForm({ name: '', description: '', year: '', link: '', photos: [] })
+      setSelectedFiles([])
+      setEditId(null)
+      loadProjects()
+    } catch (err) {
+      console.error('Erreur handleSubmit:', err)
+      alert(`Une erreur est survenue : ${err.message}`)
+    } finally {
+      setUploading(false)
     }
-
-    const method = editId ? 'PUT' : 'POST'
-    const url = editId
-      ? `${import.meta.env.VITE_API_URL}/api/projects/${editId}`
-      : `${import.meta.env.VITE_API_URL}/api/projects`
-
-    await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ ...form, photos: photoUrls })
-    })
-
-    setForm({ name: '', description: '', tech: '', year: '', photos: [] })
-    setSelectedFiles([])
-    setEditId(null)
-    setUploading(false)
-    loadProjects()
   }
 
   const handleDelete = async (id) => {
@@ -99,8 +113,8 @@ useEffect(() => {
     setForm({ 
       name: project.name, 
       description: project.description, 
-      tech: project.tech, 
       year: project.year, 
+      link: project.link || '',
       photos: project.photos || [] 
     })
     setEditId(project._id)
@@ -140,10 +154,8 @@ useEffect(() => {
       <div style={{ backgroundColor: 'var(--bg-secondary)', padding: '28px', borderRadius: '12px', marginBottom: '40px' }}>
         <h2 style={{ color: '#f8f8f7', marginBottom: '20px' }}>{editId ? '✏️ Modifier le projet' : ' Ajouter un projet'}</h2>
         
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+        <div style={{ marginBottom: '16px' }}>
           <input placeholder="Nom du projet" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputStyle} />
-       
-          <input placeholder="Technologies (ex: React, Node.js)" value={form.tech} onChange={e => setForm({ ...form, tech: e.target.value })} style={inputStyle} />
         </div>
 
         <textarea 
@@ -152,6 +164,13 @@ useEffect(() => {
           onChange={e => setForm({ ...form, description: e.target.value })} 
           rows={4} 
           style={{ ...inputStyle, resize: 'vertical', marginBottom: '16px' }} 
+        />
+
+        <input 
+          placeholder="Lien du site (ex: https://monsite.com)" 
+          value={form.link} 
+          onChange={e => setForm({ ...form, link: e.target.value })} 
+          style={{ ...inputStyle, marginBottom: '16px' }} 
         />
 
         <div style={{ marginBottom: '16px' }}>
@@ -209,7 +228,7 @@ useEffect(() => {
               {p.photos?.[0] && <img src={p.photos[0]} alt="" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px' }} />}
               <div>
                 <p style={{ color: '#f8f8f7', fontWeight: '600', fontSize: '16px' }}>{p.name}</p>
-                <p style={{ color: '#888780', fontSize: '13px' }}>{p.tech} — {p.year}</p>
+                <p style={{ color: '#888780', fontSize: '13px' }}>{p.year}</p>
                 <p style={{ color: '#888780', fontSize: '12px' }}>{p.photos?.length || 0} photo(s)</p>
               </div>
             </div>

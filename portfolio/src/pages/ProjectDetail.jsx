@@ -63,15 +63,12 @@ export default function ProjectDetail() {
           {project.name}
         </h1>
 
-        {/* Tech + année */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
-          {project.tech && project.tech.split(',').map((t, i) => (
-            <span key={i} style={{ fontSize: '11px', padding: '3px 10px', border: '1px solid #333', borderRadius: '20px', color: '#a8a69e' }}>
-              {t.trim()}
-            </span>
-          ))}
-          {project.year && <span style={{ fontSize: '11px', color: '#888780' }}>{project.year}</span>}
-        </div>
+        {/* Année */}
+        {project.year && (
+          <div style={{ marginBottom: '20px' }}>
+            <span style={{ fontSize: '11px', color: '#888780' }}>{project.year}</span>
+          </div>
+        )}
 
         {/* Description */}
         <p style={{ fontSize: '14px', color: '#888780', lineHeight: '1.8', marginBottom: '32px' }}>
