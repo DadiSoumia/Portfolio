@@ -19,14 +19,43 @@ app.use(cors({
 
 app.use(express.json())
 
+// --- Connexion MongoDB adaptée au serverless (Vercel) ---
+// En serverless, chaque "cold start" peut arriver avant que la connexion
+// précédente soit prête. On met en cache la promesse de connexion et on
+// attend explicitement qu'elle soit résolue avant de traiter une requête,
+// au lieu de laisser Mongoose "bufferiser" les requêtes jusqu'au timeout.
+let cachedConnection = global._mongooseConn
+if (!cachedConnection) {
+  cachedConnection = global._mongooseConn = { conn: null, promise: null }
+}
+
+async function connectDB() {
+  if (cachedConnection.conn) return cachedConnection.conn
+  if (!cachedConnection.promise) {
+    cachedConnection.promise = mongoose.connect(process.env.MONGO_URI).then((m) => {
+      console.log('✅ MongoDB connecté')
+      return m
+    })
+  }
+  cachedConnection.conn = await cachedConnection.promise
+  return cachedConnection.conn
+}
+
+// Toutes les routes attendent que la connexion soit prête avant de continuer
+app.use(async (req, res, next) => {
+  try {
+    await connectDB()
+    next()
+  } catch (err) {
+    console.error('❌ Erreur de connexion MongoDB:', err)
+    res.status(503).json({ message: 'Base de données indisponible, réessaie dans quelques secondes.' })
+  }
+})
+
 app.use('/api/projects', projectRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/contact', contactRoutes)
 app.use('/api/upload', uploadRoutes)
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connecté'))
-  .catch((err) => console.log(' Erreur MongoDB:', err))
 
 // app.listen() n'est utile qu'en local : sur Vercel, l'app est utilisée
 // directement comme fonction serverless (voir api/index.js), donc on ne
